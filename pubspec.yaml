@@ -1,17 +1,15 @@
 name: medicare
 description: A new Flutter project.
 
-publish_to: 'none' 
+publish_to: "none"
 version: 1.0.0+1
 
 environment:
   sdk: ">=2.16.2 <3.0.0"
 
-
 dependencies:
   flutter:
     sdk: flutter
-
 
   blur: ^3.1.0
   fluttertoast: ^8.0.9
@@ -22,6 +20,8 @@ dependencies:
   flutter_animator: ^3.2.1
   multi_image_picker: ^4.8.0
   shared_preferences: ^2.0.13
+  font_awesome_flutter: ^10.1.0
+  material_floating_search_bar: ^0.3.7
 
 dev_dependencies:
   flutter_test:

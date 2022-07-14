@@ -28,11 +28,13 @@ class _CustomAppbarWidgetState extends State<CustomAppbarWidget> {
           ? Container()
           : GestureDetector(
               onTap: () => {Navigator.of(context).pop()},
-              child: Image.asset('assets/icons/arrow-left.png')),
+              child: Image.asset('assets/icons/arrow-left.png'),
+            ),
       title: widget.logo
-          ? const Padding(
-              padding: EdgeInsets.only(left: 35),
-              child: Text("MediCare", style: LogoText),
+          ? Padding(
+              padding: const EdgeInsets.only(left: 20),
+              child:
+                  Image.asset('assets/images/ChekenLogoSmall.png', height: 200),
             )
           : Center(
               child: Container(

@@ -1,13 +1,12 @@
-import 'package:medicare/widgets/custom_button.dart';
-import 'package:medicare/widgets/custom_checkbox.dart';
-import 'package:medicare/widgets/custom_imagePicker.dart';
+import 'package:medicare/widgets/customCheckbox.dart';
+
 import 'package:image_picker/image_picker.dart';
 import '../styles.dart';
-import '../utils/helper.dart';
+
 import '../widgets/dialog/loadingDialog.dart';
-import '../widgets/navDrawer.dart';
+
 import 'package:flutter/material.dart';
-import '../widgets/custom_appbar.dart';
+import '../widgets/customAppbar.dart';
 
 @override
 void initState() {}
@@ -117,13 +116,6 @@ class _AddSymptomsState extends State<AddSymptoms> {
                         : const Center(
                             child: Text("No Symptoms"),
                           ),
-                  ),
-                  CustomButton(
-                    text: "Add Selected",
-                    width: width - 100,
-                    onTap: () {
-                      //
-                    },
                   ),
                 ]),
               ),

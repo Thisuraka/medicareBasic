@@ -1,13 +1,13 @@
-import 'package:medicare/widgets/custom_button.dart';
-import 'package:medicare/widgets/custom_checkbox.dart';
-import 'package:medicare/widgets/custom_imagePicker.dart';
+import 'dart:io';
+
 import 'package:image_picker/image_picker.dart';
+import 'package:medicare/widgets/customButton.dart';
 import '../styles.dart';
 import '../utils/helper.dart';
 import '../widgets/dialog/loadingDialog.dart';
 import '../widgets/navDrawer.dart';
 import 'package:flutter/material.dart';
-import '../widgets/custom_appbar.dart';
+import '../widgets/customAppbar.dart';
 import 'addSymptoms.dart';
 
 @override
@@ -22,12 +22,11 @@ class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
   final String _profileImg = 'assets/images/avatar.jpg';
   List<XFile>? _imageFileList = [];
-  bool _loaded = false;
+  bool buttonActive = false;
   bool _gen = false;
 
   @override
   void initState() {
-    _loaded = true;
     super.initState();
   }
 
@@ -36,103 +35,126 @@ class _HomeScreenState extends State<HomeScreen> {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
 
-    return MaterialApp(
-      home: GestureDetector(
+    return Scaffold(
+      key: _drawerKey,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(55),
+        child: CustomAppbarWidget(
+          mainTitle: "Check-en",
+          leadingImg: true,
+          logo: true,
+          searchIcon: true,
+          drawerKey: _drawerKey,
+        ),
+      ),
+      drawer: NavDrawer(
+        profileImg: _profileImg,
+      ),
+      body: GestureDetector(
         onTap: () {
           FocusScope.of(context).unfocus();
         },
-        child: Scaffold(
-          key: _drawerKey,
-          appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(55),
-            child: CustomAppbarWidget(
-              mainTitle: "MediCare",
-              leadingImg: true,
-              logo: false,
-              searchIcon: true,
-              drawerKey: _drawerKey,
+        child: Container(
+          height: height,
+          width: width,
+          margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+          child: Column(children: [
+            GestureDetector(
+              onTap: () {
+                addImage();
+              },
+              child: Container(
+                width: width,
+                height: 92,
+                margin: const EdgeInsets.only(right: 20, left: 20),
+                padding: const EdgeInsets.only(top: 10),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
+                  border: Border.all(color: Button2BorderColor, width: 1.5),
+                ),
+                child: Column(
+                  children: [
+                    Image.asset(
+                      'assets/icons/addImage.png',
+                      width: 50,
+                      height: 50,
+                      fit: BoxFit.contain,
+                    ),
+                    const Text("Pick images of symptoms"),
+                  ],
+                ),
+              ),
             ),
-          ),
-          drawer: NavDrawer(
-            profileImg: _profileImg,
-          ),
-          body: _loaded
-              ? Container(
-                  width: width,
-                  height: height,
-                  child: Column(children: [
-                    GestureDetector(
-                      onTap: addImage,
-                      child: Container(
-                        margin: const EdgeInsets.only(top: 30),
-                        width: double.infinity,
-                        color: Colors.amber,
-                        height: 100,
-                        child: CustomImagePicker(
-                            _imageFileList, addImage, removeImage,
-                            gen: _gen),
-                      ),
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 10),
+            ),
+            _gen
+                ? genList()
+                : Container(
+                    alignment: Alignment.center,
+                    height: MediaQuery.of(context).size.height / 2 + 50,
+                    child: const Text(
+                      "Please select 5 - 10 images",
+                      style: LabelStyle1,
                     ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    CustomButton(
-                      text: "Generate Symptoms",
-                      width: width - 100,
-                      onTap: () {
-                        //
-                      },
-                    ),
-                    Container(
-                      width: width - 40,
-                      height: height / 2 + 20,
-                      margin: const EdgeInsets.only(top: 10),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          border: Border.all(color: Button2BorderColor),
-                          color: Colors.white),
-                      child: symptomsList.isNotEmpty
-                          ? ListView.builder(
-                              physics: const BouncingScrollPhysics(
-                                  parent: AlwaysScrollableScrollPhysics()),
-                              scrollDirection: Axis.vertical,
-                              shrinkWrap: true,
-                              itemCount: symptomsList.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                return SizedBox(
-                                  width: 100,
-                                  child: Container(
-                                      margin: const EdgeInsets.symmetric(
-                                          vertical: 10),
-                                      child: Text(
-                                        symptomsList[index].toString(),
-                                        textAlign: TextAlign.center,
-                                        style: const TextStyle(
-                                            color: DefaultColor,
-                                            fontFamily: 'Roboto',
-                                            fontSize: 22,
-                                            fontWeight: FontWeight.w500),
-                                      )),
-                                );
-                              })
-                          : const Center(
-                              child: Text("No Symptoms"),
-                            ),
-                    ),
-                    CustomButton(
-                      text: "Add Symptoms",
-                      width: width - 100,
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => AddSymptoms(),
-                          ),
-                        );
-                      },
-                    ),
-                  ]),
-                )
-              : loadingDialog(context),
+                  ),
+            const SizedBox(
+              height: 20,
+            ),
+            CustomButton(
+                labelText: "Predict Disease",
+                active: buttonActive,
+                onPress: () {
+                  if (_imageFileList!.length < 5) {
+                    showSnackBar("Please select only 5 - 10 images", context);
+                  }
+                })
+          ]),
+        ),
+      ),
+    );
+  }
+
+  genList() {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height / 2 + 50,
+      child: SingleChildScrollView(
+        child: Wrap(
+          runSpacing: 4,
+          spacing: 4,
+          alignment: WrapAlignment.center,
+          children: List.generate(_imageFileList!.length, (index) {
+            return Stack(
+              children: [
+                Container(
+                  width: 150,
+                  height: 150,
+                  margin: const EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      border: Border.all(color: Button2BorderColor)),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8.0),
+                    child: Image.file(File(_imageFileList![index].path),
+                        fit: BoxFit.cover),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      removeImage(index);
+                    });
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(left: 2, top: 2),
+                    child: Image.asset('assets/icons/remove.png',
+                        width: 15, height: 15, fit: BoxFit.cover),
+                  ),
+                ),
+              ],
+            );
+          }),
         ),
       ),
     );
@@ -143,6 +165,9 @@ class _HomeScreenState extends State<HomeScreen> {
       _gen = true;
     } else {
       _gen = false;
+    }
+    if (_imageFileList!.length >= 5) {
+      buttonActive = true;
     }
     setState(() {});
   }

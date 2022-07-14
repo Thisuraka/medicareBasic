@@ -1,3 +1,6 @@
+import 'package:medicare/utils/settings.dart';
+import 'package:medicare/views/onBoarding/loginScreen.dart';
+
 import '../../styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animator/flutter_animator.dart';
@@ -10,16 +13,32 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  bool? signed = false;
   @override
   void initState() {
     super.initState();
+    checkNavigation();
+  }
+
+  checkNavigation() async {
+    signed = await Settings.getSigned() == null
+        ? false
+        : (await Settings.getSigned())!;
+
     Future.delayed(const Duration(seconds: 1), () {
-      //4
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => HomeScreen(),
-        ),
-      );
+      if (signed!) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => HomeScreen(),
+          ),
+        );
+      } else {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => LoginScreen(),
+          ),
+        );
+      }
     });
   }
 
@@ -45,7 +64,7 @@ class _SplashScreenState extends State<SplashScreen> {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(20.0),
                         child: Image.asset(
-                          'assets/images/splashLogo.jpeg',
+                          'assets/images/CheckenLogo.png',
                           fit: BoxFit.fitWidth,
                         ),
                       ),

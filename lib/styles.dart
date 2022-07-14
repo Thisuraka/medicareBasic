@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-const DefaultColor = Color(0xFF2980B9);
+const DefaultColor = Color(0xFFFF9470);
 const InactiveColor = Color(0xFFCFCFCF);
 const Button2BorderColor = Color(0xFFC6C6C6);
 const WarningAlertColor = Color(0xFFFFD429);

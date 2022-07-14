@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:medicare/views/onBoarding/loginScreen.dart';
 import 'package:medicare/views/onBoarding/splashScreen.dart';
 
 void main() => runApp(MyApp());

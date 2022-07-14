@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -8,10 +9,10 @@ class Helper {
     final List<XFile>? _selectedImages = await _picker.pickMultiImage();
     if (_selectedImages!.isNotEmpty) {
       _imageFileList!.addAll(_selectedImages);
-      if (_imageFileList.length > 9) {
+      if (_imageFileList.length > 10) {
         int l = _imageFileList.length;
-        _imageFileList.removeRange(9, l);
-        print("Sorry can't have more than 9");
+        _imageFileList.removeRange(10, l);
+        // print("Sorry can't have more than 10");
       }
     }
     print("Image list length : " + _imageFileList!.length.toString());
@@ -19,7 +20,7 @@ class Helper {
   }
 
   static Future<List<XFile>> selectNewImages(int imageLimiter) async {
-    int pick = 9 - imageLimiter;
+    int pick = 10 - imageLimiter;
     final List<XFile>? _imageFileList = [];
     final ImagePicker _picker = ImagePicker();
     final List<XFile>? _selectedImages = await _picker.pickMultiImage();
@@ -29,7 +30,7 @@ class Helper {
         int l = _imageFileList.length;
         _imageFileList.removeRange(pick, l);
         Fluttertoast.showToast(
-          msg: "Can not have more than 9 images",
+          msg: "Can not have more than 10 images",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.CENTER,
         );
@@ -38,4 +39,8 @@ class Helper {
     print("Image list length : " + _imageFileList!.length.toString());
     return _imageFileList;
   }
+}
+
+void showSnackBar(String message, BuildContext context) {
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
 }
