@@ -63,12 +63,3 @@ const TextButtonStyle = TextStyle(
 
 const greyNormalTextStyle = TextStyle(
     color: Colors.grey, fontSize: 18.0, height: 1.3, fontFamily: DefaultFont);
-
-List<dynamic> symptomsList = [
-  "Symptom 1",
-  " Symptom 2",
-  "Symptom 3",
-  "Symptom 4",
-  " Symptom 5",
-  "Symptom 6"
-];

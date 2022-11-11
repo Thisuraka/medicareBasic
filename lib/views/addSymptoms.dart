@@ -1,8 +1,7 @@
-import 'package:medicare/widgets/customCheckbox.dart';
-
-import 'package:image_picker/image_picker.dart';
+import 'package:medicare/widgets/customButton.dart';
 import '../styles.dart';
-
+import '../utils/helper.dart';
+import '../utils/staticData.dart';
 import '../widgets/dialog/loadingDialog.dart';
 
 import 'package:flutter/material.dart';
@@ -17,9 +16,10 @@ class AddSymptoms extends StatefulWidget {
 }
 
 class _AddSymptomsState extends State<AddSymptoms> {
-  List<XFile>? _imageFileList = [];
   bool _loaded = false;
   bool _gen = false;
+  bool buttonActive = false;
+  List<dynamic> finalSymptomList = [];
 
   @override
   void initState() {
@@ -53,74 +53,67 @@ class _AddSymptomsState extends State<AddSymptoms> {
                 child: Column(children: [
                   Container(
                     width: width - 40,
-                    height: height / 3 + 10,
-                    margin: const EdgeInsets.only(top: 10),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
-                        border: Border.all(color: Button2BorderColor),
-                        color: Colors.white),
-                    child: symptomsList.isNotEmpty
-                        ? ListView.builder(
-                            physics: const BouncingScrollPhysics(
-                                parent: AlwaysScrollableScrollPhysics()),
-                            scrollDirection: Axis.vertical,
-                            shrinkWrap: true,
-                            itemCount: symptomsList.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return SizedBox(
-                                width: 100,
-                                child: Container(
-                                    margin: const EdgeInsets.symmetric(
-                                        vertical: 10),
-                                    child: Text(
-                                      symptomsList[index].toString(),
-                                      textAlign: TextAlign.center,
-                                      style: const TextStyle(
-                                          color: DefaultColor,
-                                          fontFamily: 'Roboto',
-                                          fontSize: 22,
-                                          fontWeight: FontWeight.w500),
-                                    )),
-                              );
-                            })
-                        : const Center(
-                            child: Text("No Symptoms"),
-                          ),
-                  ),
-                  Container(
-                    width: width - 40,
-                    height: height / 3 + 10,
+                    height: height - 300,
                     margin: const EdgeInsets.only(top: 20, bottom: 20),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15),
                         border: Border.all(color: Button2BorderColor),
                         color: Colors.white),
                     child: symptomsList.isNotEmpty
-                        ? ListView.builder(
-                            physics: const BouncingScrollPhysics(
-                                parent: AlwaysScrollableScrollPhysics()),
-                            scrollDirection: Axis.vertical,
-                            shrinkWrap: true,
-                            itemCount: symptomsList.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return SizedBox(
-                                width: 100,
-                                child: Card(
-                                  elevation: 2,
-                                  child: CustomCheckbox(
-                                      text: symptomsList[index].toString(),
-                                      width: width - 200),
-                                ),
+                        ? ListView(
+                            children: symptomsList.keys.map((String key) {
+                              return CheckboxListTile(
+                                title: Text(key),
+                                autofocus: false,
+                                activeColor: DefaultColor,
+                                checkColor: Colors.white,
+                                selected: symptomsList[key]!,
+                                value: symptomsList[key]!,
+                                onChanged: (value) {
+                                  if (value!) {
+                                    if (finalSymptomList.length < 4) {
+                                      setState(() {
+                                        symptomsList[key] = value;
+                                      });
+                                      finalSymptomList.add(key);
+                                    } else {
+                                      showSnackBar(
+                                          "Please select only 5 symptoms",
+                                          context);
+                                    }
+                                  } else {
+                                    finalSymptomList.remove(key);
+                                    setState(() {
+                                      symptomsList[key] = value;
+                                    });
+                                  }
+                                },
                               );
-                            })
+                            }).toList(),
+                          )
                         : const Center(
                             child: Text("No Symptoms"),
                           ),
                   ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  CustomButton(
+                      labelText: "Predict",
+                      active: buttonActive,
+                      onPress: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => AddSymptoms(),
+                          ),
+                        );
+                      })
                 ]),
               ),
             )
           : loadingDialog(context),
     );
   }
+
+  void addToFinalList() {}
 }

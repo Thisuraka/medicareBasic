@@ -1,13 +1,50 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
-class StaticData {
-  static setSigned(bool signed) async {
-    final SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
-    sharedPrefs.setBool("signed", signed);
-  }
-
-  static Future<bool?> getSigned() async {
-    final SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
-    return sharedPrefs.getBool("signed");
-  }
-}
+Map<String, bool> symptomsList = {
+  "weight_loss": false,
+  "loss_of_appetite": false,
+  "swollen_joints": false,
+  "lameness": false,
+  "nasal_discharge": false,
+  "ocular_discharge": false,
+  "ruffled_feathers": false,
+  "diarrhea": false,
+  "mites": false,
+  "egg_production_decrease": false,
+  "inability_to_absorb_nutrients": false,
+  "distinctive_bumps": false,
+  "warts": false,
+  "stunted_growth": false,
+  "edema_in_the_comb": false,
+  "discoloration": false,
+  "coughing_and_sneezing": false,
+  "swelling": false,
+  "rales": false,
+  "gasping": false,
+  "muscular_tremors": false,
+  "opisthotonus": false,
+  "Closed_eyes": false,
+  "facial_swelling": false,
+  "increased_thirst": false,
+  "lethargy": false,
+  "profuse_tear_secretion": false,
+  "facial_skin_edema": false,
+  "progressing_tremors": false,
+  "drowsy": false,
+  "head_droop": false,
+  "laying_on_ground": false,
+  "Thick_large_white_patches_on_the_inside_the_mouth_and_crop_areas": false,
+  "Crusty_looking_eyes": false,
+  "hyperemic": false,
+  "high_fever": false,
+  "paralysis": false,
+  "dehydration": false,
+  "unkempt_feathers": false,
+  "yellow_fecal_droppings": false,
+  "dullness": false,
+  "reduction_in_the_size_of_the_egg": false,
+  "Rough_scaly_feathers": false,
+  "bloated_abdomen": false,
+  "brittle_bones": false,
+  "redness_or_scrabs_on_skin": false,
+};

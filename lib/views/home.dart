@@ -102,13 +102,19 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 20,
             ),
             CustomButton(
-                labelText: "Predict Disease",
-                active: buttonActive,
-                onPress: () {
-                  if (_imageFileList!.length < 5) {
-                    showSnackBar("Please select only 5 - 10 images", context);
-                  }
-                })
+              labelText: "Predict Disease",
+              active: buttonActive,
+              onPress: () {
+                if (_imageFileList!.length < 5) {
+                  showSnackBar("Please select only 5 - 10 images", context);
+                }
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => AddSymptoms(),
+                  ),
+                );
+              },
+            ),
           ]),
         ),
       ),
