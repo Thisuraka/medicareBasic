@@ -1,4 +1,6 @@
 import 'package:medicare/widgets/customButton.dart';
+import 'package:medicare/api/api_calls.dart';
+import 'package:medicare/api/api_caller.dart';
 import '../styles.dart';
 import '../utils/helper.dart';
 import '../utils/staticData.dart';
@@ -71,20 +73,32 @@ class _AddSymptomsState extends State<AddSymptoms> {
                                 value: symptomsList[key]!,
                                 onChanged: (value) {
                                   if (value!) {
-                                    if (finalSymptomList.length < 4) {
+                                    if (finalSymptomList.length < 9) {
                                       setState(() {
                                         symptomsList[key] = value;
                                       });
-                                      finalSymptomList.add(key);
+                                      finalSymptomList
+                                          .add(symptomsListForBackend[key]);
                                     } else {
                                       showSnackBar(
-                                          "Please select only 5 symptoms",
+                                          "Please select only 5 - 10 symptoms",
                                           context);
                                     }
                                   } else {
-                                    finalSymptomList.remove(key);
                                     setState(() {
                                       symptomsList[key] = value;
+                                    });
+                                    finalSymptomList
+                                        .remove(symptomsListForBackend[key]);
+                                  }
+                                  if (finalSymptomList.length < 9 &&
+                                      finalSymptomList.length > 4) {
+                                    setState(() {
+                                      buttonActive = true;
+                                    });
+                                  } else {
+                                    setState(() {
+                                      buttonActive = false;
                                     });
                                   }
                                 },
@@ -102,11 +116,12 @@ class _AddSymptomsState extends State<AddSymptoms> {
                       labelText: "Predict",
                       active: buttonActive,
                       onPress: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => AddSymptoms(),
-                          ),
-                        );
+                        if (buttonActive) {
+                          predict();
+                        } else {
+                          showSnackBar(
+                              "Please select 5 - 10 symptoms", context);
+                        }
                       })
                 ]),
               ),
@@ -115,5 +130,9 @@ class _AddSymptomsState extends State<AddSymptoms> {
     );
   }
 
-  void addToFinalList() {}
+  void predict() async {
+    final response =
+        await ApiCalls.predictMedicineFromSymptom(symptoms: finalSymptomList);
+    print(response.apiStatus);
+  }
 }

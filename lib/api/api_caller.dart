@@ -4,8 +4,7 @@ import 'package:http/http.dart' as http;
 import 'api_response.dart';
 import 'api_status.dart';
 
-// const baseUrl = "http://localhost:4001";
-const baseUrl = "http://10.0.2.2:4001";
+const baseUrl = "http://127.0.0.1:5000";
 const timeout = 80;
 
 class ApiCaller {
