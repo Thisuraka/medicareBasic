@@ -1,3 +1,4 @@
+import 'package:medicare/views/showPrediction.dart';
 import 'package:medicare/widgets/customButton.dart';
 import 'package:medicare/api/api_calls.dart';
 import 'package:medicare/api/api_caller.dart';
@@ -23,10 +24,23 @@ class _AddSymptomsState extends State<AddSymptoms> {
   bool buttonActive = false;
   List<dynamic> finalSymptomList = [];
 
+  Map<String, bool> symptoms = {};
+
   @override
   void initState() {
     _loaded = true;
+
+    initSymptoms();
     super.initState();
+  }
+
+  initSymptoms() {
+    setState(() {
+      symptomsList.forEach((key, value) {
+        symptoms[key] = value;
+      });
+      finalSymptomList.clear();
+    });
   }
 
   @override
@@ -61,21 +75,21 @@ class _AddSymptomsState extends State<AddSymptoms> {
                         borderRadius: BorderRadius.circular(15),
                         border: Border.all(color: Button2BorderColor),
                         color: Colors.white),
-                    child: symptomsList.isNotEmpty
+                    child: symptoms.isNotEmpty
                         ? ListView(
-                            children: symptomsList.keys.map((String key) {
+                            children: symptoms.keys.map((String key) {
                               return CheckboxListTile(
                                 title: Text(key),
                                 autofocus: false,
                                 activeColor: DefaultColor,
                                 checkColor: Colors.white,
-                                selected: symptomsList[key]!,
-                                value: symptomsList[key]!,
+                                selected: symptoms[key]!,
+                                value: symptoms[key]!,
                                 onChanged: (value) {
                                   if (value!) {
                                     if (finalSymptomList.length < 9) {
                                       setState(() {
-                                        symptomsList[key] = value;
+                                        symptoms[key] = value;
                                       });
                                       finalSymptomList
                                           .add(symptomsListForBackend[key]);
@@ -86,7 +100,7 @@ class _AddSymptomsState extends State<AddSymptoms> {
                                     }
                                   } else {
                                     setState(() {
-                                      symptomsList[key] = value;
+                                      symptoms[key] = value;
                                     });
                                     finalSymptomList
                                         .remove(symptomsListForBackend[key]);
@@ -131,8 +145,22 @@ class _AddSymptomsState extends State<AddSymptoms> {
   }
 
   void predict() async {
-    final response =
+    final diseaseResponse =
         await ApiCalls.predictMedicineFromSymptom(symptoms: finalSymptomList);
-    print(response.apiStatus);
+
+    final stageResponse = await ApiCalls.getStage(symptoms: finalSymptomList);
+
+    if (diseaseResponse.isSuccess && stageResponse.isSuccess) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => ShowPrediction(
+            disease: diseaseResponse.jsonBody,
+            stage: stageResponse.jsonBody,
+          ),
+        ),
+      );
+    } else {
+      showSnackBar(" Something went wrong", context);
+    }
   }
 }

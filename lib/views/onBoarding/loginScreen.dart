@@ -3,10 +3,12 @@ import 'package:medicare/widgets/customTextbox.dart';
 import 'package:medicare/widgets/searchBar.dart';
 
 import '../../widgets/dialog/loadingDialog.dart';
+import '../dashboard.dart';
 import '../home.dart';
 import '../../styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import '../../utils/helper.dart';
 
 @override
 void initState() {}
@@ -62,7 +64,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         CustomTextBox(
-                          controller: _emailAddress,
+                          controller: _password,
+                          keyboardType: TextInputType.visiblePassword,
                           labelText: "Please enter password",
                           suffixIcon: const Icon(
                             Icons.key,
@@ -74,8 +77,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           height: 20,
                         ),
                         CustomButton(
-                            labelText: "Login / Register",
-                            active: buttonActive,
+                            labelText: "Login ",
+                            active: true,
                             onPress: () {
                               loginRegisterCheck();
                             }),
@@ -92,11 +95,20 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   loginRegisterCheck() {
-    print("TODO : Implement login register");
-    // loadingDialog(context);
+    // if (_emailAddress.text == "checken@gmail.com" &&
+    //     _password.text == "123456") {
+    //   Navigator.of(context).push(
+    //     MaterialPageRoute(
+    //       builder: (context) => HomeScreen(),
+    //     ),
+    //   );
+    // } else {
+    //   showSnackBar("Invalid Login", context);
+    // }
+
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => HomeScreen(),
+        builder: (context) => Dashboard(),
       ),
     );
   }

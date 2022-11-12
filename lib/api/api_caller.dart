@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:http/http.dart' as http;
 import 'api_response.dart';
 import 'api_status.dart';
 
-const baseUrl = "http://127.0.0.1:5000";
+// const baseUrl = "http://127.0.0.1:5000";
+const baseUrl = "http://10.0.2.2:5000";
 const timeout = 80;
 
 class ApiCaller {
@@ -26,7 +28,7 @@ class ApiCaller {
             .post(
               Uri.parse(baseUrl + endpoint),
               headers: allHeaders,
-              body: data,
+              body: jsonEncode(data),
             )
             .timeout(const Duration(seconds: timeout));
 

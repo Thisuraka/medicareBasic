@@ -108,11 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 if (_imageFileList!.length < 5) {
                   showSnackBar("Please select only 5 - 10 images", context);
                 }
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => AddSymptoms(),
-                  ),
-                );
+              
               },
             ),
           ]),

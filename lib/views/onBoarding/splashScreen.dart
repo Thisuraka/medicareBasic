@@ -1,4 +1,5 @@
 import 'package:medicare/utils/settings.dart';
+import 'package:medicare/views/dashboard.dart';
 import 'package:medicare/views/onBoarding/loginScreen.dart';
 
 import '../../styles.dart';
@@ -29,7 +30,7 @@ class _SplashScreenState extends State<SplashScreen> {
       if (signed!) {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => HomeScreen(),
+            builder: (context) => Dashboard(),
           ),
         );
       } else {

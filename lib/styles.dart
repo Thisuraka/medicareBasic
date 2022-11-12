@@ -22,14 +22,24 @@ const HeaderStyle = TextStyle(
     fontSize: 24.0,
     fontWeight: FontWeight.bold);
 
-const SubHeadStyle = TextStyle(
-    color: Color(0xFF858585), fontWeight: FontWeight.bold, fontSize: 13);
+const HeaderStyle2 = TextStyle(
+    fontFamily: DefaultFont,
+    color: Colors.black45,
+    fontSize: 24.0,
+    fontWeight: FontWeight.bold);
+const HeaderStyle3 = TextStyle(
+    fontFamily: DefaultFont,
+    color: DefaultColor,
+    fontSize: 26.0,
+    fontWeight: FontWeight.bold);
+const SubHeadStyle =
+    TextStyle(color: DefaultColor, fontWeight: FontWeight.bold, fontSize: 16);
 
 const LabelStyle1 = TextStyle(
     fontFamily: DefaultFont,
-    color: Color(0XFFABABAB),
+    color: Colors.black54,
     fontWeight: FontWeight.w500,
-    fontSize: 15.0);
+    fontSize: 18.0);
 
 const HintStyle1 = TextStyle(
     fontFamily: DefaultFont,
