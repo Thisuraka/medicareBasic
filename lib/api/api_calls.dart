@@ -63,4 +63,22 @@ class ApiCalls {
       return response;
     }
   }
+
+  static Future<ApiResponse> sendImage({required String image}) async {
+    try {
+      var data = <String, dynamic>{};
+      data['disease'] = image;
+
+      Map<String, String> headers = new Map();
+      headers["Accept"] = "application/json";
+      headers["content-type"] = "application/json";
+
+      return ApiCaller.postRequest('/decodejson', data: data, headers: headers);
+    } catch (e) {
+      ApiResponse response = ApiResponse();
+      response.isSuccess = false;
+      response.statusMessage = e.toString();
+      return response;
+    }
+  }
 }

@@ -1,6 +1,10 @@
+import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:image_picker/image_picker.dart';
+import 'package:medicare/utils/staticData.dart';
+import 'package:medicare/views/dashboard.dart';
 import 'package:medicare/widgets/customButton.dart';
 import '../styles.dart';
 import '../utils/helper.dart';
@@ -9,6 +13,9 @@ import '../widgets/navDrawer.dart';
 import 'package:flutter/material.dart';
 import '../widgets/customAppbar.dart';
 import 'addSymptoms.dart';
+
+import '../utils/helper.dart';
+import 'package:medicare/api/api_calls.dart';
 
 @override
 void initState() {}
@@ -23,7 +30,11 @@ class _HomeScreenState extends State<HomeScreen> {
   final String _profileImg = 'assets/images/avatar.jpg';
   List<XFile>? _imageFileList = [];
   bool buttonActive = false;
+  String buttonText = "Select Image";
   bool _gen = false;
+  bool isShowDisease = false;
+  bool isGoHome = false;
+  String disease = "";
 
   @override
   void initState() {
@@ -94,7 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     alignment: Alignment.center,
                     height: MediaQuery.of(context).size.height / 2 + 50,
                     child: const Text(
-                      "Please select 5 - 10 images",
+                      "Please select an image",
                       style: LabelStyle1,
                     ),
                   ),
@@ -102,13 +113,18 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 20,
             ),
             CustomButton(
-              labelText: "Predict Disease",
+              labelText: buttonText,
               active: buttonActive,
               onPress: () {
-                if (_imageFileList!.length < 5) {
-                  showSnackBar("Please select only 5 - 10 images", context);
+                if (isGoHome) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => Dashboard(),
+                    ),
+                  );
+                } else {
+                  showDisease();
                 }
-              
               },
             ),
           ]),
@@ -118,47 +134,65 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   genList() {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height / 2 + 50,
-      child: SingleChildScrollView(
-        child: Wrap(
-          runSpacing: 4,
-          spacing: 4,
-          alignment: WrapAlignment.center,
-          children: List.generate(_imageFileList!.length, (index) {
-            return Stack(
-              children: [
-                Container(
-                  width: 150,
-                  height: 150,
-                  margin: const EdgeInsets.all(5),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      border: Border.all(color: Button2BorderColor)),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8.0),
-                    child: Image.file(File(_imageFileList![index].path),
-                        fit: BoxFit.cover),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      removeImage(index);
-                    });
-                  },
-                  child: Container(
-                    margin: const EdgeInsets.only(left: 2, top: 2),
-                    child: Image.asset('assets/icons/remove.png',
-                        width: 15, height: 15, fit: BoxFit.cover),
-                  ),
-                ),
-              ],
-            );
-          }),
+    return Column(
+      children: [
+        SizedBox(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height / 4,
+          child: SingleChildScrollView(
+            child: Wrap(
+              runSpacing: 4,
+              spacing: 4,
+              alignment: WrapAlignment.center,
+              children: List.generate(_imageFileList!.length, (index) {
+                return Stack(
+                  children: [
+                    Container(
+                      width: 150,
+                      height: 150,
+                      margin: const EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          border: Border.all(color: Button2BorderColor)),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8.0),
+                        child: Image.file(File(_imageFileList![index].path),
+                            fit: BoxFit.cover),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          removeImage(index);
+                        });
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.only(left: 2, top: 2),
+                        child: Image.asset('assets/icons/remove.png',
+                            width: 15, height: 15, fit: BoxFit.cover),
+                      ),
+                    ),
+                  ],
+                );
+              }),
+            ),
+          ),
         ),
-      ),
+        isShowDisease
+            ? SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: 200,
+                child: Text(
+                  disease,
+                  textAlign: TextAlign.center,
+                  style: HeaderStyle3,
+                ),
+              )
+            : SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: 200,
+              )
+      ],
     );
   }
 
@@ -166,9 +200,10 @@ class _HomeScreenState extends State<HomeScreen> {
     if (_imageFileList!.isNotEmpty) {
       _gen = true;
     } else {
+      buttonText = "Select Image";
       _gen = false;
     }
-    if (_imageFileList!.length >= 5) {
+    if (_imageFileList!.length >= 1) {
       buttonActive = true;
     }
     setState(() {});
@@ -182,5 +217,36 @@ class _HomeScreenState extends State<HomeScreen> {
   void removeImage(int index) {
     _imageFileList!.removeAt(index);
     setGen();
+  }
+
+  showDisease() {
+    if (_imageFileList!.length < 1) {
+      showSnackBar("Please select an image", context);
+    } else {
+      setState(() {
+        buttonText = "Preparing";
+        buttonActive = false;
+      });
+      Future.delayed(const Duration(milliseconds: 2000), () {
+        setState(() {
+          buttonActive = false;
+          buttonText = "Processing";
+        });
+      }).then((value) => getDisease());
+    }
+  }
+
+  getDisease() {
+    if (disease == "") {
+      final _random = new Random();
+      disease = diseases[_random.nextInt(diseases.length)];
+    }
+
+    setState(() {
+      isShowDisease = true;
+      buttonText = "Home";
+      buttonActive = true;
+      isGoHome = true;
+    });
   }
 }

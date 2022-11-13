@@ -65,6 +65,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         CustomTextBox(
                           controller: _password,
+                          obscureText: true,
                           keyboardType: TextInputType.visiblePassword,
                           labelText: "Please enter password",
                           suffixIcon: const Icon(
@@ -95,21 +96,15 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   loginRegisterCheck() {
-    // if (_emailAddress.text == "checken@gmail.com" &&
-    //     _password.text == "123456") {
-    //   Navigator.of(context).push(
-    //     MaterialPageRoute(
-    //       builder: (context) => HomeScreen(),
-    //     ),
-    //   );
-    // } else {
-    //   showSnackBar("Invalid Login", context);
-    // }
-
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => Dashboard(),
-      ),
-    );
+    if (_emailAddress.text == "checken@gmail.com" &&
+        _password.text == "123456") {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => Dashboard(),
+        ),
+      );
+    } else {
+      showSnackBar("Invalid Login", context);
+    }
   }
 }

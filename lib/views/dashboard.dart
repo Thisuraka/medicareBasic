@@ -1,3 +1,6 @@
+import 'package:medicare/main.dart';
+import 'package:medicare/utils/settings.dart';
+import 'package:medicare/views/home.dart';
 import 'package:medicare/widgets/customButton.dart';
 import 'package:medicare/widgets/customTextbox.dart';
 import 'package:medicare/widgets/searchBar.dart';
@@ -8,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../../utils/helper.dart';
 import 'addSymptoms.dart';
+import 'onBoarding/loginScreen.dart';
 
 @override
 void initState() {}
@@ -30,6 +34,8 @@ class _DashboardState extends State<Dashboard> {
           margin: const EdgeInsets.only(top: 40, left: 10, right: 10),
           child: SingleChildScrollView(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
                   margin: const EdgeInsets.only(top: 20, left: 40, right: 40),
@@ -76,37 +82,68 @@ class _DashboardState extends State<Dashboard> {
                           ),
                         ),
                       ),
-                      Container(
-                        width: MediaQuery.of(context).size.width / 2.5,
-                        height: 80,
-                        alignment: Alignment.center,
-                        child: const Text(
-                          "Predict with\n Image",
-                          style: SubHeadStyle,
-                          textAlign: TextAlign.center,
-                        ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Button2BorderColor),
-                          color: Colors.white,
-                          boxShadow: [
-                            BoxShadow(
-                              color: DefaultColor.withOpacity(0.4),
-                              spreadRadius: 3,
-                              blurRadius: 7,
-                              offset:
-                                  Offset(0, 3), // changes position of shadow
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => HomeScreen(),
                             ),
-                          ],
+                          );
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width / 2.5,
+                          height: 80,
+                          alignment: Alignment.center,
+                          child: const Text(
+                            "Predict with\n Image",
+                            style: SubHeadStyle,
+                            textAlign: TextAlign.center,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: Button2BorderColor),
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                color: DefaultColor.withOpacity(0.4),
+                                spreadRadius: 3,
+                                blurRadius: 7,
+                                offset:
+                                    Offset(0, 3), // changes position of shadow
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ],
                   ),
-                )
+                ),
+                GestureDetector(
+                  onTap: () {
+                    logout();
+                  },
+                  child: Container(
+                    margin: new EdgeInsets.only(top: 200),
+                    child: const Text(
+                      "Logout",
+                      style: LabelStyle1,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  logout() {
+    Settings.setSigned(false);
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => LoginScreen(),
       ),
     );
   }

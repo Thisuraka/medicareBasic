@@ -6,12 +6,13 @@ class Helper {
   static Future<List<XFile>> selectImages() async {
     final List<XFile>? _imageFileList = [];
     final ImagePicker _picker = ImagePicker();
-    final List<XFile>? _selectedImages = await _picker.pickMultiImage();
+    final List<XFile>? _selectedImages =
+        await _picker.pickMultiImage(imageQuality: 85);
     if (_selectedImages!.isNotEmpty) {
       _imageFileList!.addAll(_selectedImages);
-      if (_imageFileList.length > 10) {
+      if (_imageFileList.length > 1) {
         int l = _imageFileList.length;
-        _imageFileList.removeRange(10, l);
+        _imageFileList.removeRange(2, l);
         // print("Sorry can't have more than 10");
       }
     }
@@ -20,7 +21,7 @@ class Helper {
   }
 
   static Future<List<XFile>> selectNewImages(int imageLimiter) async {
-    int pick = 10 - imageLimiter;
+    int pick = 1 - imageLimiter;
     final List<XFile>? _imageFileList = [];
     final ImagePicker _picker = ImagePicker();
     final List<XFile>? _selectedImages = await _picker.pickMultiImage();
@@ -30,7 +31,7 @@ class Helper {
         int l = _imageFileList.length;
         _imageFileList.removeRange(pick, l);
         Fluttertoast.showToast(
-          msg: "Can not have more than 10 images",
+          msg: "Can not have more than 1 image",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.CENTER,
         );

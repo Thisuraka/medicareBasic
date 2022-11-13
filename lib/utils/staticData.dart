@@ -1,5 +1,14 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
+List<dynamic> diseases = [
+  "Coccidiosis",
+  "Salmonella",
+  "Pcr Cocidiosis",
+  "Pcr Salmonella",
+  "NCD",
+  "Pcr NCD"
+];
+
 Map<String, bool> symptomsList = {
   "Weight loss": false,
   "Loss of appetite": false,
